@@ -24,9 +24,7 @@ public class Web {
                     });
                 })
                 .exception(IllegalArgumentException.class, (e, ctx) -> WebUtil.error(ctx, 400, "bad request"))
-                .exception(WebException.class, (e, ctx) -> {
-                    WebUtil.error(ctx, e.getStatus(), e.getMessage());
-                });
+                .exception(WebException.class, (e, ctx) -> WebUtil.error(ctx, e.getStatus(), e.getMessage()));
     }
 
     private record HelloWorld(String hello) {
