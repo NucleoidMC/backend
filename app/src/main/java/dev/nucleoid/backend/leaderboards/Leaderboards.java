@@ -42,7 +42,7 @@ public class Leaderboards implements EndpointGroup {
             throw new InvalidParameterException("count", ">0");
         }
         if (offset < 0) {
-            throw new InvalidParameterException("count", ">=0");
+            throw new InvalidParameterException("offset", ">=0");
         }
 
         // Make the query
