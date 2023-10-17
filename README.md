@@ -41,4 +41,4 @@ The main reason is that not many of us are Rust programmers, and since we're in 
   - [ ] Log-in via GitHub?
   - [ ] Server-wide announcements for those not in the Discord
   - [ ] Leaving messages for specific users (private moderation warnings)
-
+- [ ] Dockerise! 🐳
