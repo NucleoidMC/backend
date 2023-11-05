@@ -17,8 +17,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Objects;
-import java.util.Optional;
 
 import static io.javalin.apibuilder.ApiBuilder.get;
 import static io.javalin.rendering.template.TemplateUtil.model;

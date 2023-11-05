@@ -1,6 +1,5 @@
 package dev.nucleoid.backend.web.auth;
 
-import dev.nucleoid.backend.NucleoidBackend;
 import dev.nucleoid.backend.stagedoor.Stagedoor;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
