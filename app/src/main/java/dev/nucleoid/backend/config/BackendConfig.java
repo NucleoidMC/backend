@@ -17,15 +17,17 @@ import java.util.Optional;
 
 public record BackendConfig(
     DatabaseConfig database,
-    WebConfig web
+    WebConfig web,
+    OAuthConfig oauth
 ) {
-    public static Codec<BackendConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<BackendConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DatabaseConfig.CODEC.fieldOf("database").forGetter(BackendConfig::database),
-            WebConfig.CODEC.fieldOf("web").forGetter(BackendConfig::web)
+            WebConfig.CODEC.fieldOf("web").forGetter(BackendConfig::web),
+            OAuthConfig.CODEC.fieldOf("oauth").forGetter(BackendConfig::oauth)
     ).apply(instance, BackendConfig::new));
 
     public BackendConfig() {
-        this(new DatabaseConfig(), new WebConfig());
+        this(new DatabaseConfig(), new WebConfig(), new OAuthConfig());
     }
 
     public static BackendConfig load() {
@@ -77,7 +79,7 @@ public record BackendConfig(
             String password,
             String databaseName
     ) {
-        public static Codec<DatabaseConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        public static final Codec<DatabaseConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("host").forGetter(DatabaseConfig::host),
                 Codec.STRING.fieldOf("port").forGetter(DatabaseConfig::port),
                 Codec.STRING.fieldOf("username").forGetter(DatabaseConfig::username),
@@ -87,6 +89,22 @@ public record BackendConfig(
 
         public DatabaseConfig() {
             this("localhost", "5432", "postgres", "postgres", "nucleoid_backend");
+        }
+    }
+
+    public record OAuthConfig(
+            String githubClientId,
+            String githubClientSecret,
+            String githubOrg
+    ) {
+        public static final Codec<OAuthConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.STRING.fieldOf("github_client_id").forGetter(OAuthConfig::githubClientId),
+                Codec.STRING.fieldOf("github_client_secret").forGetter(OAuthConfig::githubClientSecret),
+                Codec.STRING.fieldOf("github_org").forGetter(OAuthConfig::githubOrg)
+        ).apply(instance, OAuthConfig::new));
+
+        public OAuthConfig() {
+            this("CHANGEME", "CHANGEME", "NucleoidMC");
         }
     }
 }

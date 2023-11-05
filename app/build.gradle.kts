@@ -9,7 +9,9 @@ repositories {
 
 dependencies {
     // HTTP API
-    implementation("io.javalin:javalin:5.6.1")
+    implementation("io.javalin:javalin:5.6.3")
+    implementation("io.javalin:javalin-rendering:5.6.2")
+    implementation("org.freemarker:freemarker:2.3.32")
 
     // Database
     implementation("com.zaxxer:HikariCP:5.0.1")

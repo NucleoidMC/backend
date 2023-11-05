@@ -24,7 +24,6 @@ public class NucleoidBackend {
             return;
         }
 
-        Web.create(config.web(), dataSource)
-                .start(3000);
+        Web.create(config, dataSource).start("::", 3000);
     }
 }
