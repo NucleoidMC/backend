@@ -6,10 +6,12 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.nucleoid.backend.NucleoidBackend;
 import dev.nucleoid.backend.web.exceptions.InvalidParameterException;
+import dev.nucleoid.backend.web.exceptions.MissingParameterException;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class WebUtil {
     public static int intQuery(Context ctx, String name, int defaultValue) throws InvalidParameterException {
@@ -23,6 +25,15 @@ public class WebUtil {
             throw new InvalidParameterException(name, "an int");
         }
         return value;
+    }
+
+    public static UUID uuidPathParam(Context ctx, String name) {
+        try {
+            var query = ctx.pathParam(name);
+            return UUID.fromString(query);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidParameterException(name, "a uuid");
+        }
     }
 
     public static <T> void sendJson(Context ctx, T object, Codec<T> codec) {

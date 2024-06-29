@@ -12,7 +12,9 @@
                 <form method="post">
                     <div class="field">
                         <p class="control">
-                            <input type="submit" class="button is-danger" value="Log out">
+                            <sl-button type="submit">
+                                Log out
+                            </sl-button>
                         </p>
                     </div>
                 </form>

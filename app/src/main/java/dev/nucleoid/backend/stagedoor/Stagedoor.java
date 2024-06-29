@@ -1,5 +1,6 @@
 package dev.nucleoid.backend.stagedoor;
 
+import dev.nucleoid.backend.announcements.AnnouncementsStagedoor;
 import dev.nucleoid.backend.config.BackendConfig;
 import dev.nucleoid.backend.web.auth.Role;
 import io.javalin.apibuilder.EndpointGroup;
@@ -15,10 +16,12 @@ import io.javalin.http.Context;
 public class Stagedoor implements EndpointGroup {
     public static final String USERNAME_SESSION_ATTRIBUTE = "stagedoor-username";
 
-    private final BackendConfig.OAuthConfig oauthConfig;
+    private final BackendConfig config;
+    private final Web web;
 
-    public Stagedoor(BackendConfig.OAuthConfig oauthConfig) {
-        this.oauthConfig = oauthConfig;
+    public Stagedoor(BackendConfig config, Web web) {
+        this.config = config;
+        this.web = web;
     }
 
     private void index(Context ctx) {
@@ -41,6 +44,7 @@ public class Stagedoor implements EndpointGroup {
         get("/hello", ctx -> WebUtil.sendJson(ctx, new Web.HelloWorld("world"), Web.HelloWorld.CODEC), Role.STAGEDOOR_ADMIN);
         get("/logout", this::confirmLogout);
         post("/logout", this::logout);
-        path("/github", new GithubAuth(this.oauthConfig));
+        path("/github", new GithubAuth(this.config.oauth()));
+        path("/announcements", new AnnouncementsStagedoor(this.web.getAnnouncements().getDb(), this.config.web()));
     }
 }

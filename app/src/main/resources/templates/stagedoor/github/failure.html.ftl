@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="message" type="String" -->
 <#import "../lib/base.ftl" as u>
 
 <@u.page>
@@ -5,7 +6,7 @@
         <main class="container">
             <div class="content">
                 <h1>
-                    Github login failed
+                    GitHub login failed
                 </h1>
                 <p>
                     Sorry, you aren't able to log in right now.

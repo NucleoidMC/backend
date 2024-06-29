@@ -1,6 +1,7 @@
 package dev.nucleoid.backend.leaderboards;
 
 import com.zaxxer.hikari.HikariDataSource;
+import dev.nucleoid.backend.web.util.Pagination;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +17,7 @@ public class LeaderboardsDb {
         this.dataSource = dataSource;
     }
 
-    public List<LeaderboardEntry> fetchLeaderboard(String id, int count, int offset) throws SQLException {
+    public List<LeaderboardEntry> fetchLeaderboard(String id, Pagination pagination) throws SQLException {
         try (Connection conn = dataSource.getConnection();
                 PreparedStatement statement = conn.prepareStatement("""
                         SELECT player_id, ranking, value
@@ -26,16 +27,13 @@ public class LeaderboardsDb {
                                 OFFSET ?
                                 LIMIT ?""")) {
             statement.setString(1, id);
-            statement.setInt(2, offset);
-            statement.setInt(3, count);
+            statement.setInt(2, pagination.offset());
+            statement.setInt(3, pagination.count());
             var result = statement.executeQuery();
             // Prepare list with pre-allocated capacity
-            var entries = new ArrayList<LeaderboardEntry>(count);
+            var entries = new ArrayList<LeaderboardEntry>(pagination.count());
             while (result.next()) {
-                var player = result.getObject("player_id", UUID.class);
-                var ranking = result.getInt("ranking");
-                var value = result.getDouble("value");
-                entries.add(new LeaderboardEntry(player, ranking, value));
+                entries.add(LeaderboardEntry.fromResultSet(result));
             }
             return entries;
         }

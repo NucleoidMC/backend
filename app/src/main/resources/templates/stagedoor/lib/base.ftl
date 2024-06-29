@@ -1,13 +1,14 @@
 <#macro page>
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="en" class="sl-theme-dark">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport"
               content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Nucleoid Stagedoor</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.11.2/cdn/themes/dark.css" />
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.11.2/cdn/shoelace.js" ></script>
         <!-- Tiny Potato says trans rights! 🏳️‍⚧️ -->
     </head>
     <body>
@@ -19,7 +20,7 @@
             <div class="content has-text-centered">
                 <a href="https://nucleoid.xyz">NucleoidMC</a>
                 Stagedoor - part of
-                <a href="https://github.com/NucleoidMC/nucleoid-backend-java">nucleoid-backend</a>.
+                <a href="https://github.com/NucleoidMC/backend">nucleoid-backend</a>.
             </div>
         </footer>
     </body>
@@ -27,34 +28,15 @@
 </#macro>
 
 <#macro navbar>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-            <#-- TODO: add nucleoid logo -->
-<#--            <a class="navbar-item" href="/">-->
-<#--                <img src="/assets/icons/icon.png" alt="icon" width="28">-->
-<#--            </a>-->
-        </div>
-        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" id="menu-button">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-        </a>
-
-        <div id="navbarMain" class="navbar-menu">
-            <a class="navbar-item" href="/stagedoor/">
+    <nav>
+        <sl-button-group label="navigation">
+            <sl-button href="/stagedoor/">
                 Home
-            </a>
+            </sl-button>
 
-            <a class="navbar-item" href="/stagedoor/logout">
+            <sl-button href="/stagedoor/logout">
                 Sign out
-            </a>
-        </div>
-
-        <script>
-            document.getElementById("menu-button").onclick = function() {
-                document.getElementById("menu-button").classList.toggle('is-active');
-                document.getElementById("navbarMain").classList.toggle('is-active');
-            }
-        </script>
+            </sl-button>
+        </sl-button-group>
     </nav>
 </#macro>

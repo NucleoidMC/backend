@@ -3,6 +3,7 @@ package dev.nucleoid.backend.web;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.zaxxer.hikari.HikariDataSource;
+import dev.nucleoid.backend.announcements.Announcements;
 import dev.nucleoid.backend.config.BackendConfig;
 import dev.nucleoid.backend.leaderboards.Leaderboards;
 import dev.nucleoid.backend.stagedoor.Stagedoor;
@@ -18,10 +19,19 @@ import static io.javalin.apibuilder.ApiBuilder.path;
 public class Web {
     public static final Logger LOGGER = LoggerFactory.getLogger(Web.class);
 
-    public static Javalin create(
-            BackendConfig config,
-            HikariDataSource dataSource
-    ) {
+    private final BackendConfig config;
+    private final HikariDataSource dataSource;
+    private final Leaderboards leaderboards;
+    private final Announcements announcements;
+
+    public Web(BackendConfig config, HikariDataSource dataSource) {
+        this.config = config;
+        this.dataSource = dataSource;
+        this.leaderboards = new Leaderboards(config.web(), dataSource);
+        this.announcements = new Announcements(dataSource);
+    }
+
+    public Javalin create() {
         return Javalin.create(javalinConfig -> {
                     javalinConfig.jetty.sessionHandler(() -> SessionUtil.sqlSessionHandler(dataSource));
                     javalinConfig.accessManager(new RoleAccessManager());
@@ -30,9 +40,10 @@ public class Web {
                 .routes(() -> {
                     path("/v2", () -> {
                         get("/", ctx -> WebUtil.sendJson(ctx, new HelloWorld("world"), HelloWorld.CODEC));
-                        path("/leaderboards", new Leaderboards(config.web(), dataSource));
+                        path("/leaderboards", this.leaderboards);
+                        path("/announcements", this.announcements);
                     });
-                    path("/stagedoor", new Stagedoor(config.oauth()));
+                    path("/stagedoor", new Stagedoor(config.oauth(), this));
                 })
                 .exception(IllegalArgumentException.class, (e, ctx) -> WebUtil.error(ctx, 400, "bad request"))
                 .exception(WebException.class, (e, ctx) -> {
@@ -41,6 +52,14 @@ public class Web {
                     }
                     WebUtil.error(ctx, e.getStatus(), e.getMessage());
                 });
+    }
+
+    public Leaderboards getLeaderboards() {
+        return leaderboards;
+    }
+
+    public Announcements getAnnouncements() {
+        return announcements;
     }
 
     public record HelloWorld(String hello) {

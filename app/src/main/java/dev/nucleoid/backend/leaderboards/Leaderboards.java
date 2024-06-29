@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import dev.nucleoid.backend.config.BackendConfig;
 import dev.nucleoid.backend.web.WebUtil;
 import dev.nucleoid.backend.web.exceptions.InvalidParameterException;
+import dev.nucleoid.backend.web.util.Pagination;
 import io.javalin.apibuilder.EndpointGroup;
 import io.javalin.http.Context;
 import org.slf4j.Logger;
@@ -28,26 +29,16 @@ public class Leaderboards implements EndpointGroup {
 
     private void getLeaderboard(Context ctx) {
         var id = ctx.pathParam("id");
-        int count = WebUtil.intQuery(ctx, "count", 10);
-        int offset = WebUtil.intQuery(ctx, "offset", 0);
+        var pagination = Pagination.paginationQuery(ctx, config);
 
         // Quick checks before we attempt querying the DB
         if (!id.contains(":")) {
             throw new InvalidParameterException("id");
         }
-        if (count > config.maxQuerySize()) {
-            throw new InvalidParameterException("count", "<=" + config.maxQuerySize());
-        }
-        if (count <= 0) {
-            throw new InvalidParameterException("count", ">0");
-        }
-        if (offset < 0) {
-            throw new InvalidParameterException("offset", ">=0");
-        }
 
         // Make the query
         try {
-            var results = this.db.fetchLeaderboard(id, count, offset);
+            var results = this.db.fetchLeaderboard(id, pagination);
             WebUtil.sendJson(ctx, results, Codec.list(LeaderboardEntry.CODEC));
         } catch (SQLException e) {
             LOGGER.error("failed to query leaderboard", e);

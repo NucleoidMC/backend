@@ -1,6 +1,7 @@
 package dev.nucleoid.backend.database;
 
 import com.zaxxer.hikari.HikariDataSource;
+import dev.nucleoid.backend.database.migrations.CreateAnnouncementsTable;
 import dev.nucleoid.backend.database.migrations.CreateLeaderboardTables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,8 @@ public class Migrations {
      * List of all migrations for this project. They will be applied in the order specified.
      */
     private static final List<Migration> MIGRATIONS = List.of(
-            new CreateLeaderboardTables()
+            new CreateLeaderboardTables(),
+            new CreateAnnouncementsTable()
     );
 
     public static void runMigrations(HikariDataSource dataSource) throws SQLException {
